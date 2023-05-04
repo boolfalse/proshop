@@ -4,8 +4,6 @@ import products from "../products";
 import Product from "../components/Product";
 
 const HomeScreen = () => {
-    const year = new Date().getFullYear();
-
     return (
         <>
             <h2>Latest Products</h2>
