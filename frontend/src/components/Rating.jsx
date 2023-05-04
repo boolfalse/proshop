@@ -6,7 +6,7 @@ const Rating = ({value, text}) => {
     return (
         <div className="rating">
             {ratingNumbers.map((ratingNumber, index) => (
-                <span>{value >= ratingNumber ? <FaStar /> : (
+                <span key={index}>{value >= ratingNumber ? <FaStar /> : (
                     (value >= ratingNumber - 0.5) ? <FaStarHalfAlt /> : <FaRegStar />
                 )}</span>
             ))}
