@@ -1,5 +1,5 @@
 
-import { Col, Row, Container } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 import products from "../products";
 import Product from "../components/Product";
 
