@@ -1,0 +1,23 @@
+{
+  "name": "proshop",
+  "version": "1.0.0",
+  "description": "MERN stack (Redux Toolkit) eCommerce platform",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node backend/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/boolfalse/proshop.git"
+  },
+  "author": "boolfalse",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/boolfalse/proshop/issues"
+  },
+  "homepage": "https://github.com/boolfalse/proshop#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
