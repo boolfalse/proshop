@@ -1,23 +1,18 @@
 
 import express from 'express';
-import products from "./products.js";
 import dotenv from 'dotenv';
 dotenv.config();
 import connectDB from "./config/db.js";
 connectDB();
+import productRoutes from "./routes/products.js";
 const port = process.env.PORT || 5000;
 const app = express();
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
     return res.send('API is running...');
 });
-app.get('/api/products', (req, res) => {
-    return res.json(products).status(200);
-});
-app.get('/api/products/:id', (req, res) => {
-    const product = products.find((p) => p._id === req.params.id);
-    return res.json(product || []).status(product ? 200 : 404);
-});
+
+app.use('/api/products', productRoutes);
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}...`);
