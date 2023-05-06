@@ -35,7 +35,17 @@ const register = asyncHandler(async (req, res) => {
     return res.send("register");
 });
 const logout = asyncHandler(async (req, res) => {
-    return res.send("logout");
+    res.cookie("jwt", "", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 0,
+        expires: new Date(Date.now() + 10), // 10s
+    });
+
+    return res.status(200).json({
+        message: "Logged out successfully!",
+    });
 });
 
 const getProfile = asyncHandler(async (req, res) => {
