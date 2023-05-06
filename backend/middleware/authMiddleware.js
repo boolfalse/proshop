@@ -6,6 +6,7 @@ import User from "../models/userModel.js";
 export const isAuth = asyncHandler(async (req, res, next) => {
     const token = req.cookies.jwt;
     if (!token) {
+        res.status(401);
         throw new Error("Not authorized!");
     }
 

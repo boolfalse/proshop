@@ -1,38 +1,49 @@
 
 import asyncHandler from "../middleware/asyncHandler.js";
 import User from "../models/userModel.js";
-import jwt from "jsonwebtoken";
+import { generateToken } from "../utils/token.js";
 
 const login = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
-    if (user && user.matchPassword(password)) {
-        const expiresInDays = process.env.JWT_EXPIRES_IN?.split("d")[0] || 30;
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-            expiresIn: `${expiresInDays}d`,
-        });
-
-        // set JWT as HTTP-only cookie
-        res.cookie("jwt", token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-            maxAge: 1000 * 60 * 60 * 24 * expiresInDays, // 30d
-            // expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * expiresInDays), // 30d
-        });
+    if (user && await user.matchPassword(password)) {
+        await generateToken(res, user._id);
 
         return res.status(200).json({
             _id: user._id,
             name: user.name,
             email: user.email,
+            isAdmin: user.isAdmin,
             // token,
         });
     }
 
+    res.status(401);
     throw new Error("Invalid email or password!");
 });
 const register = asyncHandler(async (req, res) => {
-    return res.send("register");
+    const { name, email, password } = req.body;
+
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+        res.status(400);
+        throw new Error("User already exists!");
+    }
+
+    const user = await User.create({
+        name,
+        email,
+        password, // hashed in userModel.js
+    });
+    await generateToken(res, user._id);
+
+    return res.status(200).json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        // token,
+    });
 });
 const logout = asyncHandler(async (req, res) => {
     res.cookie("jwt", "", {

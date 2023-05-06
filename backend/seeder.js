@@ -17,7 +17,6 @@ const importData = async () => {
         await User.deleteMany();
 
         const createdUsers = await User.insertMany(users);
-        console.log(createdUsers)
         const adminUser = createdUsers[0]._id;
 
         const sampleProducts = products.map((product) => {
@@ -29,7 +28,7 @@ const importData = async () => {
         console.log('Data Imported!');
         process.exit();
     } catch (error) {
-        console.error(`${error}`);
+        console.error(error);
         process.exit(1);
     }
 };
@@ -45,7 +44,7 @@ const destroyData = async () => {
         console.log('Data Destroyed!');
         process.exit();
     } catch (error) {
-        console.error(`${error}`);
+        console.error(error);
         process.exit(1);
     }
 };
