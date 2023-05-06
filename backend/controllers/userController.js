@@ -1,9 +1,35 @@
 
 import asyncHandler from "../middleware/asyncHandler.js";
 import User from "../models/userModel.js";
+import jwt from "jsonwebtoken";
 
 const login = asyncHandler(async (req, res) => {
-    return res.send("login");
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (user && user.matchPassword(password)) {
+        const expiresInDays = process.env.JWT_EXPIRES_IN?.split("d")[0] || 30;
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+            expiresIn: `${expiresInDays}d`,
+        });
+
+        // set JWT as HTTP-only cookie
+        res.cookie("jwt", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 1000 * 60 * 60 * 24 * expiresInDays, // 30d
+            // expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * expiresInDays), // 30d
+        });
+
+        return res.status(200).json({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            // token,
+        });
+    }
+
+    throw new Error("Invalid email or password!");
 });
 const register = asyncHandler(async (req, res) => {
     return res.send("register");
