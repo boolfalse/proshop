@@ -4,13 +4,13 @@ import Product from "../models/productModel.js";
 
 const getProducts = asyncHandler(async (req, res) => {
     const products = await Product.find({});
-    return res.json(products).status(200);
+    return res.status(200).json(products);
 });
 
 const getProductById = asyncHandler(async (req, res) => {
     const product = await Product.findById(req.params.id);
     if (product) {
-        return res.json(product).status(200);
+        return res.status(200).json(product);
     }
 
     res.status(404);

@@ -60,10 +60,40 @@ const logout = asyncHandler(async (req, res) => {
 });
 
 const getProfile = asyncHandler(async (req, res) => {
-    return res.send("getProfile");
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+        return res.status(200).json({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            isAdmin: user.isAdmin,
+        });
+    }
+
+    res.status(404);
+    throw new Error("User not found!");
 });
 const updateProfile = asyncHandler(async (req, res) => {
-    return res.send("updateProfile");
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+        // fields to update
+        user.name = req.body.name || user.name;
+
+        const updatedUser = await user.save();
+
+        return res.status(201).json({
+            _id: user._id,
+            email: user.email,
+            isAdmin: user.isAdmin,
+            // updated fields
+            name: updatedUser.name,
+        });
+    }
+
+    res.status(404);
+    throw new Error("User not found!");
 });
 
 const adminGetUsers = asyncHandler(async (req, res) => {
