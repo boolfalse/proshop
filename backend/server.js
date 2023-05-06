@@ -2,6 +2,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 dotenv.config();
+import cookieParser from 'cookie-parser';
 import connectDB from "./config/db.js";
 connectDB();
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
@@ -13,6 +14,9 @@ const app = express();
 // Body parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Cookie parser
+app.use(cookieParser());
 
 app.get('/api', (req, res) => {
     return res.status(200).json({
