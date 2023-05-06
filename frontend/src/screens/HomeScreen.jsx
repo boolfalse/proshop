@@ -1,6 +1,7 @@
 
 import { Col, Row } from 'react-bootstrap';
 import Product from "../components/Product";
+import Loader from "../components/Loader";
 import { useFetchProductsQuery } from "../slices/productsApiSlice";
 
 const HomeScreen = () => {
@@ -13,7 +14,7 @@ const HomeScreen = () => {
     return (
         <>
             { isLoading ? (
-                <h3>Loading...</h3>
+                <Loader />
             ) : (
                 error ? (
                     <h3>{ error?.data?.message || error?.error }</h3>
