@@ -16,6 +16,7 @@
 
 ### Resources:
 
+- [Postman Collection](https://documenter.getpostman.com/view/1747137/2s93eX2Dym)
 - [MERN Stack From Scratch](https://www.traversymedia.com/mern-stack-from-scratch)
 - [GitHub official repo](https://github.com/bradtraversy/proshop-v2)
 - [Old repo](https://github.com/bradtraversy/proshop_mern)
