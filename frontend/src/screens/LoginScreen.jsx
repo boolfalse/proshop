@@ -1,16 +1,46 @@
 
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import FormContainer from "../components/FormContainer";
 import {Button, Form, Row} from "react-bootstrap";
-import {Link} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
+import {useLoginMutation} from "../slices/usersApiSlice";
+import {useDispatch, useSelector} from "react-redux";
+import {setCredentials} from "../slices/authSlice";
+import {toast} from "react-toastify";
+import Loader from "../components/Loader";
 
 const LoginScreen = () => {
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [loginApiCall, {isLoading, error}] = useLoginMutation();
+    const { userInfo } = useSelector(state => state.auth);
 
-    const submitHandler = (e) => {
-        e.preventDefault() // prevent page from refreshing
-        console.log('submit')
+    const {search} = useLocation();
+    const searchParams = new URLSearchParams(search);
+    const redirect = searchParams.get('redirect') || '/';
+
+    useEffect(() => {
+        if (userInfo) {
+            navigate(redirect);
+        }
+    }, [
+        navigate,
+        redirect,
+        userInfo,
+    ]);
+
+    const submitHandler = async (e) => {
+        e.preventDefault()
+
+        try {
+            const res = await loginApiCall({email, password}).unwrap();
+            dispatch(setCredentials({ ...res }));
+            navigate(redirect);
+        } catch (err) {
+            toast.error(err?.data?.message || err.error);
+        }
     }
 
     return (
@@ -33,12 +63,16 @@ const LoginScreen = () => {
                                   value={password}
                     ></Form.Control>
                 </Form.Group>
-                <Button type='submit' variant='primary' className='my-2'>
-                    Login
-                </Button>
+                <Button type='submit'
+                        variant='primary'
+                        disabled={isLoading}
+                        className='my-2'
+                >Login</Button>
+                {isLoading && <Loader/>}
             </Form>
             <Row className='py-3'>
-                New Customer? <Link to={'/register'}>Register</Link>
+                New Customer?
+                <Link to={redirect ? `/register?redirect=${redirect}` : '/register'}>Register</Link>
             </Row>
         </FormContainer>
     )
