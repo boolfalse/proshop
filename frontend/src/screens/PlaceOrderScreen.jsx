@@ -50,8 +50,7 @@ const PlaceOrderScreen = () => {
             // dispatch({type: "CART_CLEAR_ITEMS"});
 
             dispatch(clearCartItems());
-            // navigate(`/order/my/${res._id}`);
-            console.log(res);
+            navigate(`/order/${res._id}`);
         } catch (err) {
             toast.error(err.message || "Something went wrong!");
         }
