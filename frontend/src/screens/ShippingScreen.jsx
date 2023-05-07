@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {saveShippingAddress} from "../slices/cartSlice";
 import CheckoutSteps from "../components/CheckoutSteps";
+import {toast} from "react-toastify";
 
 const ShippingScreen = () => {
     const cart = useSelector(state => state.cart);
@@ -21,6 +22,11 @@ const ShippingScreen = () => {
 
     const submitHandler = (e) => {
         e.preventDefault();
+
+        if (!address || !city || !postalCode || !country) {
+            toast.warning('Please fill in all fields');
+            return;
+        }
 
         dispatch(saveShippingAddress({
             address,
@@ -59,10 +65,12 @@ const ShippingScreen = () => {
                 </Form.Group>
                 <Form.Group controlId='country' className='my-2'>
                     <Form.Label>Country</Form.Label>
-                    <Form.Control type='text'
-                                  placeholder='Enter country'
-                                  onChange={(e) => setCountry(e.target.value)}
-                                  value={country}></Form.Control>
+                    <Form.Select onChange={(e) => setCountry(e.target.value)}
+                                    value={country}>
+                        <option value=''>Select country</option>
+                        <option value='us'>United States</option>
+                        <option value='am'>Armenia</option>
+                    </Form.Select>
                 </Form.Group>
                 <Button type='submit' variant='primary' className='my-2'>
                     Continue
