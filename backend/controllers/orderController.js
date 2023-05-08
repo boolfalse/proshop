@@ -89,7 +89,18 @@ const getOrderById = asyncHandler(async (req, res) => {
     }
 });
 const updateOrderToDelivered = asyncHandler(async (req, res) => {
-    return res.send('Order delivered');
+    const id = req.params.id;
+    const order = await Order.findById(id);
+    if (order) {
+        order.isDelivered = true;
+        order.deliveredAt = Date.now();
+        const updatedOrder = await order.save();
+
+        return res.status(200).json(updatedOrder);
+    }
+
+    res.status(404);
+    throw new Error('Resource not found!');
 });
 const getOrders = asyncHandler(async (req, res) => {
     const orders = await Order.find({})
