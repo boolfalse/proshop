@@ -5,7 +5,7 @@ import {useEffect} from "react";
 import CheckoutSteps from "../components/CheckoutSteps";
 import {Button, Card, Col, Image, ListGroup, Row} from "react-bootstrap";
 import Message from "../components/Message";
-import {useCreateOrderMutation} from "../slices/ordersApiSlace";
+import {useCreateOrderMutation} from "../slices/ordersApiSlice";
 import Loader from "../components/Loader";
 import {clearCartItems} from "../slices/cartSlice";
 import {toast} from "react-toastify";

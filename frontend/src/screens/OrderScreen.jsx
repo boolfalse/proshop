@@ -6,7 +6,7 @@ import {
     usePayOrderMutation,
     useGetPaypalClientIdQuery,
     useDeliverOrderMutation,
-} from "../slices/ordersApiSlace";
+} from "../slices/ordersApiSlice";
 import Loader from "../components/Loader";
 import {Button, Card, Col, ListGroup, Row} from "react-bootstrap";
 import {PayPalButtons, usePayPalScriptReducer} from "@paypal/react-paypal-js";

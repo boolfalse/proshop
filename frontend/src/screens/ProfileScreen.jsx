@@ -6,7 +6,7 @@ import {useProfileMutation} from "../slices/usersApiSlice";
 import Loader from "../components/Loader";
 import {toast} from "react-toastify";
 import {setCredentials} from "../slices/authSlice";
-import {useGetMyOrdersQuery} from "../slices/ordersApiSlace";
+import {useGetMyOrdersQuery} from "../slices/ordersApiSlice";
 import Message from "../components/Message";
 import {FaTimes} from "react-icons/fa";
 import {LinkContainer} from "react-router-bootstrap";
