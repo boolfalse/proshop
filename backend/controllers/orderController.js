@@ -92,7 +92,10 @@ const updateOrderToDelivered = asyncHandler(async (req, res) => {
     return res.send('Order delivered');
 });
 const getOrders = asyncHandler(async (req, res) => {
-    return res.send('Orders');
+    const orders = await Order.find({})
+        .populate('user', 'id name');
+
+    res.status(200).json(orders);
 });
 
 export default {

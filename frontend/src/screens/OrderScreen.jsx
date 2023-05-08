@@ -12,10 +12,11 @@ import {PayPalButtons, usePayPalScriptReducer} from "@paypal/react-paypal-js";
 import {useEffect} from "react";
 import {toast} from "react-toastify";
 import {FaArrowLeft} from "react-icons/fa";
+import {useSelector} from "react-redux";
 
 const OrderScreen = () => {
     const {orderId} = useParams();
-    // const cart = useSelector((state) => state.cart);
+    const { userInfo } = useSelector((state) => state.auth);
     const {
         data: order,
         refetch,
@@ -90,9 +91,15 @@ const OrderScreen = () => {
     };
 
     return <>
-        <Link to="/profile" className="btn btn-light my-3">
-            <FaArrowLeft /> Back to Profile
-        </Link>
+        {userInfo.isAdmin ? (
+            <Link to="/admin/orders" className="btn btn-light my-3">
+                <FaArrowLeft /> Back to List
+            </Link>
+        ) : (
+            <Link to="/profile" className="btn btn-light my-3">
+                <FaArrowLeft /> Back to Profile
+            </Link>
+        )}
         {isLoading ? (
             <Loader/>
         ) : (error ? (
