@@ -20,7 +20,7 @@ const OrderScreen = () => {
     const { userInfo } = useSelector((state) => state.auth);
     const {
         data: order,
-        refetch,
+        refetch: refetchOrder,
         isLoading,
         error,
     } = useGetOrderDetailsQuery(orderId);
@@ -67,7 +67,7 @@ const OrderScreen = () => {
     const deliverOrderHandler = async () => {
         try {
             await deliverOrder(orderId);
-            refetch();
+            refetchOrder();
             toast.success("Order has been delivered.");
         } catch (err) {
             toast.error(err.data?.message || err.message || "Failed to deliver the order!");
@@ -78,7 +78,7 @@ const OrderScreen = () => {
         return actions.order.capture().then(async (details) => {
             try {
                 await payOrder({ orderId, details });
-                refetch();
+                refetchOrder();
                 toast.success("Order has been paid.");
             } catch (err) {
                 toast.error(err.data?.message || err.message || "Failed to pay the order!");
