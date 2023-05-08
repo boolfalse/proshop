@@ -80,6 +80,7 @@ const updateProfile = asyncHandler(async (req, res) => {
     if (user) {
         // fields to update
         user.name = req.body.name || user.name;
+        user.password = req.body.password || user.password;
 
         const updatedUser = await user.save();
 
