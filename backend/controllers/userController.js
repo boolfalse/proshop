@@ -99,7 +99,7 @@ const updateProfile = asyncHandler(async (req, res) => {
 
 const adminGetUsers = asyncHandler(async (req, res) => {
     const users = await User.find({
-        isAdmin: false,
+        // isAdmin: false,
     });
 
     return res.status(200).json(users);
@@ -107,7 +107,7 @@ const adminGetUsers = asyncHandler(async (req, res) => {
 const adminDeleteUser = asyncHandler(async (req, res) => {
     const userId = req.params.id;
     const user = await User.findById(userId);
-    if (user) {
+    if (user && !user.isAdmin) {
         await User.deleteOne({ _id: userId })
         return res.status(200).json({ message: 'User deleted.' });
     }
@@ -116,7 +116,14 @@ const adminDeleteUser = asyncHandler(async (req, res) => {
     throw new Error('Resource not found!');
 });
 const adminGetUserById = asyncHandler(async (req, res) => {
-    return res.send("adminGetUserById");
+    const userId = req.params.id;
+    const user = await User.findById(userId).select('-password');
+    if (user) {
+        return res.status(200).json(user);
+    }
+
+    res.status(404);
+    throw new Error('Resource not found!');
 });
 const adminUpdateUser = asyncHandler(async (req, res) => {
     return res.send("adminUpdateUser");

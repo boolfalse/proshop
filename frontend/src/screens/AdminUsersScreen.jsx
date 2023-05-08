@@ -22,7 +22,11 @@ const AdminUsersScreen = () => {
         error: errorDeleteUser,
     }] = useAdminDeleteUserMutation();
 
-    const deleteUserHandler = async (userId) => {
+    const deleteUserHandler = async (userId, isAdmin) => {
+        // if (isAdmin) {
+        //     toast.error('Not allowed to delete admin user!');
+        //     return;
+        // }
         if (window.confirm('Are you sure you want to delete the user?')) {
             try {
                 await deleteUser(userId);
@@ -47,6 +51,7 @@ const AdminUsersScreen = () => {
                         <th>NAME</th>
                         <th>EMAIL</th>
                         <th>REGISTERED</th>
+                        <th>ROLE</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
@@ -55,8 +60,11 @@ const AdminUsersScreen = () => {
                         <tr key={user._id}>
                             <td>{user._id}</td>
                             <td>{user.name}</td>
-                            <td>{user.email}</td>
+                            <td>
+                                <a href={`mailto:${user.email}`}>{user.email}</a>
+                            </td>
                             <td>{user.createdAt.substring(0, 10)}</td>
+                            <td>{user.isAdmin ? 'Admin' : 'User'}</td>
                             <td>
                                 <LinkContainer to={`/admin/users/${user._id}`}>
                                     <Button variant='light' className='btn-sm mx-2' title='Edit User'>
@@ -64,9 +72,10 @@ const AdminUsersScreen = () => {
                                     </Button>
                                 </LinkContainer>
                                 <Button variant='danger'
-                                        style={{color: 'white'}}
+                                        disabled={user.isAdmin}
+                                        style={{color: user.isAdmin ? 'red' : 'black'}}
                                         className='btn-sm mx-2'
-                                        onClick={() => deleteUserHandler(user._id)}
+                                        onClick={() => deleteUserHandler(user._id, user.isAdmin)}
                                         title='Delete User'>
                                     <FaTrash />
                                 </Button>
