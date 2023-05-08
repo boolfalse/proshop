@@ -7,7 +7,7 @@ import {isAdmin, isAuth} from "../middleware/authMiddleware.js";
 router.route('/').get(productController.getProducts);
 router.route('/:id').get(productController.getProductById);
 router.route('/').post(isAuth, isAdmin, productController.createProduct);
-router.route('/:id').put(isAuth, isAdmin, productController.editProduct);
+router.route('/:id').put(isAuth, isAdmin, productController.updateProduct);
 router.route('/:id').delete(isAuth, isAdmin, productController.deleteProduct);
 
 export default router;

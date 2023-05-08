@@ -34,17 +34,36 @@ const createProduct = asyncHandler(async (req, res) => {
     return res.status(201).json(createdProduct);
 });
 
-const editProduct = asyncHandler(async (req, res) => {
-    const productId = req.params.id;
-    const product = await Product.updateOne({
-        _id: productId,
-        name: req.body.name,
-        category: req.body.category,
-        brand: req.body.brand,
-        price: req.body.price,
-    });
+const updateProduct = asyncHandler(async (req, res) => {
+    const {
+        name,
+        category,
+        brand,
+        price,
+        image,
+        countInStock,
+        description,
+        // numReviews,
+    } = req.body;
 
-    return res.status(201).json(product);
+    const productId = req.params.id;
+    const product = await Product.findById(productId);
+    if (product) {
+        product.name = name;
+        product.category = category;
+        product.brand = brand;
+        product.price = price;
+        product.image = image;
+        product.countInStock = countInStock;
+        product.description = description;
+        // product.numReviews = 0;
+
+        const updatedProduct = await product.save();
+        return res.status(200).json(updatedProduct);
+    }
+
+    res.status(404);
+    throw new Error('Resource not found!');
 });
 
 const deleteProduct = asyncHandler(async (req, res) => {
@@ -60,6 +79,6 @@ export default {
     getProducts,
     getProductById,
     createProduct,
-    editProduct,
+    updateProduct,
     deleteProduct,
 };
