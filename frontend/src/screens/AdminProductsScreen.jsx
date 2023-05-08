@@ -4,6 +4,7 @@ import {Button, Col, Row, Table} from "react-bootstrap";
 import {
     useFetchProductsQuery,
     useCreateProductMutation,
+    useDeleteProductMutation,
 } from "../slices/productsApiSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
@@ -21,6 +22,10 @@ const AdminProductsScreen = () => {
         isLoading: isLoadingCreateProduct,
         error: errorCreateProduct,
     }] = useCreateProductMutation();
+    const [deleteProduct, {
+        isLoading: isLoadingDeleteProduct,
+        error: errorDeleteProduct,
+    }] = useDeleteProductMutation();
 
     const createProductHandler = async () => {
         if (window.confirm('Are you sure you want to create a new product?')) {
@@ -33,8 +38,16 @@ const AdminProductsScreen = () => {
             }
         }
     };
-    const deleteProductHandler = (productId) => {
-        console.log(productId)
+    const deleteProductHandler = async (productId) => {
+        if (window.confirm('Are you sure you want to delete the product?')) {
+            try {
+                await deleteProduct(productId);
+                refetchProducts();
+                toast.success('Product deleted.');
+            } catch (err) {
+                toast.error(err.data?.message || err.error || 'Something went wrong!');
+            }
+        }
     };
 
     return <>
@@ -48,8 +61,8 @@ const AdminProductsScreen = () => {
                 </Button>
             </Col>
         </Row>
-        {errorCreateProduct && <Message variant='danger'>{errorCreateProduct}</Message>}
         {isLoadingCreateProduct && <Loader />}
+        {isLoadingDeleteProduct && <Loader />}
 
         {isLoadingProducts ? <Loader /> : (
             errorProducts ? (
