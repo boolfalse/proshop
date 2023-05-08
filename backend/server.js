@@ -9,12 +9,19 @@ import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 import productRoutes from "./routes/products.js";
 import userRoutes from "./routes/user.js";
 import orderRoutes from "./routes/orders.js";
+import uploadRoutes from "./routes/upload.js";
+import path from "path";
 const port = process.env.PORT || 5000;
 const app = express();
 
 // Body parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Set __dirname to the current directory
+const __dirname = path.resolve();
+// Make the uploads folder static
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 // Cookie parser
 app.use(cookieParser());
@@ -28,6 +35,7 @@ app.get('/api', (req, res) => {
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/upload', uploadRoutes);
 
 app.get('/api/config/paypal', (req, res) => {
     res.send({ clientId: process.env.PAYPAL_CLIENT_ID })
