@@ -34,6 +34,11 @@ const LoginScreen = () => {
     const submitHandler = async (e) => {
         e.preventDefault()
 
+        if (!email || !password) {
+            toast.error('Please fill all fields!');
+            return;
+        }
+
         try {
             const res = await loginApiCall({email, password}).unwrap();
             dispatch(setCredentials({ ...res }));

@@ -56,7 +56,24 @@ const getMyOrderById = asyncHandler(async (req, res) => {
     }
 });
 const updateOrderToPaid = asyncHandler(async (req, res) => {
-    return res.send('Order paid');
+    const id = req.params.id;
+    const order = await Order.findById(id);
+    if (order) {
+        order.isPaid = true;
+        order.paidAt = Date.now();
+        order.paymentResult = {
+            id: req.body.id,
+            status: req.body.status,
+            updateTime: req.body.update_time,
+            email: req.body.payer.email_address,
+        };
+        const updatedOrder = await order.save();
+
+        return res.status(200).json(updatedOrder);
+    }
+
+    res.status(404);
+    throw new Error('Resource not found!');
 });
 // for admin
 const getOrderById = asyncHandler(async (req, res) => {
