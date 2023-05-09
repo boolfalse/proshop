@@ -7,7 +7,7 @@ import {
 } from "../slices/usersApiSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
-import {FaUser, FaTrash} from "react-icons/fa";
+import {FaUser, FaUserLock, FaTrash} from "react-icons/fa";
 import {toast} from "react-toastify";
 
 const AdminUsersScreen = () => {
@@ -68,7 +68,7 @@ const AdminUsersScreen = () => {
                             <td>
                                 <LinkContainer to={`/admin/users/${user._id}`}>
                                     <Button variant='light' className='btn-sm mx-2' title='Edit User'>
-                                        <FaUser />
+                                        {user.isAdmin ? <FaUserLock /> : <FaUser />}
                                     </Button>
                                 </LinkContainer>
                                 <Button variant='danger'

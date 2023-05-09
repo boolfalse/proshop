@@ -13,12 +13,8 @@ import {toast} from "react-toastify";
 
 const AdminUserProfileScreen = () => {
     const [name, setName] = useState('');
-    const [price, setPrice] = useState(0);
-    const [image, setImage] = useState('');
-    const [brand, setBrand] = useState('');
-    const [category, setCategory] = useState('');
-    const [countInStock, setCountInStock] = useState(0);
-    const [description, setDescription] = useState('');
+    const [email, setEmail] = useState('');
+    const [isAdmin, setIsAdmin] = useState(false);
 
     const navigate = useNavigate();
     const { userId } = useParams();
@@ -36,6 +32,8 @@ const AdminUserProfileScreen = () => {
     useEffect(() => {
         if (user) {
             setName(user.name);
+            setEmail(user.email);
+            setIsAdmin(user.isAdmin);
         }
     }, [
         user,
@@ -48,6 +46,8 @@ const AdminUserProfileScreen = () => {
             const updated = await updateUser({
                 _id: userId,
                 name,
+                email,
+                isAdmin,
             }).unwrap();
             if (updated.error) {
                 toast.error(updated.error || 'Something went wrong!');
@@ -66,25 +66,62 @@ const AdminUserProfileScreen = () => {
             <Link to={'/admin/users'} className={'btn btn-light my-3'}>
                 Users List
             </Link>
-            <FormContainer>
-                <h2>Edit User</h2>
-                {isLoadingUser ? <Loader /> : (errorUser ? (
-                    <Message variant='danger'>{errorUser}</Message>
+            {
+                isLoadingUser ? (
+                    <Loader />
                 ) : (
-                    <Form onSubmit={submitUpdateHandler}>
-                        <Form.Group controlId='name'>
-                            <Form.Label>Name</Form.Label>
-                            <Form.Control type='text'
-                                          placeholder='Enter name'
-                                          value={name}
-                                          onChange={(e) => setName(e.target.value)} />
-                        </Form.Group>
-                        {errorUpdateUser && <Message variant='danger'>{errorUpdateUser}</Message>}
-                        {isLoadingUpdateUser && <Loader />}
-                        <Button type='submit' variant='primary' className='my-3'>Update</Button>
-                    </Form>
-                ))}
-            </FormContainer>
+                    <>
+                        <FormContainer>
+                            { !user.isAdmin && <h2>Edit Profile</h2> }
+                            <h2>Registered on {user.createdAt.substring(0, 10)}</h2>
+                            {isLoadingUser ? <Loader /> : (errorUser ? (
+                                <Message variant='danger'>{errorUser}</Message>
+                            ) : (
+                                <Form onSubmit={submitUpdateHandler}>
+                                    <Form.Group controlId='name'>
+                                        <Form.Label>Name</Form.Label>
+                                        <Form.Control type='text'
+                                                      disabled={user.isAdmin}
+                                                      placeholder='Enter name'
+                                                      className='mb-3'
+                                                      value={name}
+                                                      onChange={(e) => setName(e.target.value)} />
+                                    </Form.Group>
+                                    <Form.Group controlId='email'>
+                                        <Form.Label>Email</Form.Label>
+                                        <Form.Control type='email'
+                                                      disabled={user.isAdmin}
+                                                      placeholder='Enter email'
+                                                      className='mb-3'
+                                                      value={email}
+                                                      onChange={(e) => setEmail(e.target.value)} />
+                                    </Form.Group>
+                                    <Form.Group controlId='isAdmin'>
+                                        <Form.Label>Is Admin</Form.Label>
+                                        <Form.Check type='checkbox'
+                                                    disabled={user.isAdmin}
+                                                    label='Is Admin'
+                                                    className='mb-3'
+                                                    checked={isAdmin}
+                                                    onChange={(e) => setIsAdmin(e.target.checked)}
+                                        ></Form.Check>
+                                    </Form.Group>
+                                    {errorUpdateUser && <Message variant='danger'>{errorUpdateUser}</Message>}
+                                    {isLoadingUpdateUser && <Loader />}
+                                    {
+                                        !isLoadingUpdateUser &&
+                                        <Button type='submit'
+                                                variant='primary'
+                                                disabled={user.isAdmin}
+                                                className='my-3'
+                                        >Update</Button>
+                                    }
+                                </Form>
+                            ))}
+                        </FormContainer>
+                    </>
+                )
+            }
         </>
     );
 };

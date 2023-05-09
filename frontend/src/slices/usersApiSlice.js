@@ -35,7 +35,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
             query: () => ({
                 url: `${USERS_URL}/list`,
             }),
-            providesTags: ['User'],
+            providesTags: ['Users'],
             keepUnusedDataFor: 5,
         }),
         adminDeleteUser: builder.mutation({
