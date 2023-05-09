@@ -11,9 +11,9 @@ router.route("/logout").post(userController.logout);
 router.route("/profile").get(isAuth, userController.getProfile);
 router.route("/profile").put(isAuth, userController.updateProfile);
 
-router.route("/").get(isAuth, isAdmin, userController.adminGetUsers);
-router.route("/:id").get(isAuth, isAdmin, userController.adminGetUserById);
-router.route("/:id").put(isAuth, isAdmin, userController.adminUpdateUser);
-router.route("/:id").delete(isAuth, isAdmin, userController.adminDeleteUser);
+router.route("/list").get(isAuth, isAdmin, userController.adminGetUsers);
+router.route("/user/:id").get(isAuth, isAdmin, userController.adminGetUserById);
+router.route("/user/:id").put(isAuth, isAdmin, userController.adminUpdateUser);
+router.route("/user/:id").delete(isAuth, isAdmin, userController.adminDeleteUser);
 
 export default router;

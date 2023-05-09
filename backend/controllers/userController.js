@@ -126,7 +126,23 @@ const adminGetUserById = asyncHandler(async (req, res) => {
     throw new Error('Resource not found!');
 });
 const adminUpdateUser = asyncHandler(async (req, res) => {
-    return res.send("adminUpdateUser");
+    const userId = req.params.id;
+    const user = await User.findById(userId);
+    if (user && !user.isAdmin) {
+        // fields to update
+        user.name = req.body.name || user.name;
+
+        const updatedUser = await user.save();
+
+        return res.status(201).json({
+            _id: updatedUser._id,
+            // updated fields
+            name: updatedUser.name,
+        });
+    }
+
+    res.status(404);
+    throw new Error('Resource not found!');
 });
 
 export default {
