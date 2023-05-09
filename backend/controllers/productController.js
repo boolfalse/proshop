@@ -78,10 +78,43 @@ const deleteProduct = asyncHandler(async (req, res) => {
     throw new Error('Resource not found!');
 });
 
+const createProductReview = asyncHandler(async (req, res) => {
+    const productId = req.params.id;
+    const product = await Product.findById(productId);
+    if (!product) {
+        res.status(404);
+        throw new Error('Resource not found!');
+    }
+
+    const {rating, comment} = req.body;
+    const alreadyReviewed = product.reviews.find(
+        review => review.user.toString() === req.user._id.toString()
+    );
+    if (alreadyReviewed) {
+        res.status(400);
+        throw new Error('Product already reviewed!');
+    }
+
+    product.reviews.push({
+        user: req.user._id,
+        name: req.user.name,
+        rating: Number(rating),
+        comment,
+    });
+    product.numReviews = product.reviews.length;
+
+    const allReviews = product.reviews.reduce((acc, item) => item.rating + acc, 0);
+    product.rating = allReviews / product.reviews.length;
+
+    await product.save();
+    res.status(201).json({ message: 'Review added!' });
+});
+
 export default {
     getProducts,
     getProductById,
     createProduct,
     updateProduct,
     deleteProduct,
+    createProductReview,
 };

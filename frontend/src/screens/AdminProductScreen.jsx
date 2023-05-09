@@ -110,7 +110,8 @@ const AdminProductScreen = () => {
                     <Form onSubmit={submitHandler}>
                         <Form.Group controlId='name'>
                             <Form.Label>Name</Form.Label>
-                            <Form.Control type='text'
+                            <Form.Control as='textarea'
+                                          row='3'
                                           placeholder='Enter name'
                                           value={name}
                                           onChange={(e) => setName(e.target.value)} />

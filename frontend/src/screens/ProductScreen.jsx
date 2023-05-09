@@ -2,24 +2,37 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Row, Col, Image, ListGroup, Card, Button, Form } from "react-bootstrap";
 import Rating from "../components/Rating";
-import { useGetProductDetailsQuery } from "../slices/productsApiSlice";
+import {
+    useGetProductDetailsQuery,
+    useCreateProductReviewMutation,
+} from "../slices/productsApiSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import { addToCart } from "../slices/cartSlice";
+import {toast} from "react-toastify";
 
 const ProductScreen = () => {
     const { productId } = useParams();
+    const [qty, setQty] = useState(1);
+    const [rating, setRating] = useState(0);
+    const [comment, setComment] = useState('');
+    const { userInfo } = useSelector((state) => state.auth);
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [qty, setQty] = useState(1);
 
     const {
         data: product,
         isLoading,
         error,
+        refetch: refetchProduct,
     } = useGetProductDetailsQuery(productId);
+    const [createProductReview, {
+        isLoading: isLoadingCreateReview,
+        error: errorCreateReview,
+    }] = useCreateProductReviewMutation();
 
     const addToCartHandler = () => {
         // dispatch({
@@ -32,6 +45,23 @@ const ProductScreen = () => {
         dispatch(addToCart({ ...product, qty }));
         navigate('/cart');
     }
+
+    const submitCreateReviewHandler = async (e) => {
+        e.preventDefault();
+        try {
+            await createProductReview({
+                _id: productId,
+                rating,
+                comment
+            }).unwrap();
+            setRating(0);
+            setComment('');
+            refetchProduct();
+            toast.success('Review submitted.')
+        } catch (err) {
+            toast(err.data?.message || err.error || 'Something went wrong!')
+        }
+    };
 
     return <>
         <Link to="/" className="btn btn-light my-3">Back</Link>
@@ -85,11 +115,9 @@ const ProductScreen = () => {
                                         <Row>
                                             <Col>Qty</Col>
                                             <Col>
-                                                <Form.Control
-                                                    as='select'
-                                                    value={qty}
-                                                    onChange={(e) => setQty(Number(e.target.value))}
-                                                >
+                                                <Form.Control as='select'
+                                                              onChange={(e) => setQty(Number(e.target.value))}
+                                                              value={qty}>
                                                     {[...Array(product.countInStock).keys()].map((x) => (
                                                         <option key={x + 1} value={x + 1}>{x + 1}</option>
                                                     ))}
@@ -107,6 +135,64 @@ const ProductScreen = () => {
                                 </ListGroup.Item>
                             </ListGroup>
                         </Card>
+                    </Col>
+                </Row>
+                <Row className='review'>
+                    <Col md={6}>
+                        <h2>Reviews</h2>
+                        {product.reviews.length === 0 && <Message>No Reviews</Message>}
+                        <ListGroup variant='flush'>
+                            {product.reviews.map((review) => (
+                                <ListGroup.Item key={review._id}>
+                                    <strong>{review.name}</strong>
+                                    <Rating value={review.rating} />
+                                    <p>{review.createdAt.substring(0, 10)}</p>
+                                    <p>{review.comment}</p>
+                                </ListGroup.Item>
+                            ))}
+                            <ListGroup.Item>
+                                <h2>Write a Customer Review</h2>
+                                {
+                                    errorCreateReview && (
+                                        <Message variant='danger'>
+                                            {errorCreateReview?.data?.message || errorCreateReview?.error}
+                                        </Message>
+                                    )
+                                }
+                                {isLoadingCreateReview && <Loader />}
+                                {userInfo ? (
+                                    <Form onSubmit={submitCreateReviewHandler}>
+                                        <Form.Group controlId='rating' className='my-2'>
+                                            <Form.Label>Rating</Form.Label>
+                                            <Form.Control as='select'
+                                                          disabled={isLoadingCreateReview}
+                                                          onChange={(e) => setRating(Number(e.target.value))}
+                                                          value={rating}>
+                                                <option value=''>Select...</option>
+                                                <option value='1'>1 - Poor</option>
+                                                <option value='2'>2 - Fair</option>
+                                                <option value='3'>3 - Good</option>
+                                                <option value='4'>4 - Very Good</option>
+                                                <option value='5'>5 - Excellent</option>
+                                            </Form.Control>
+                                        </Form.Group>
+                                        <Form.Group controlId='comment' className='my-2'>
+                                            <Form.Label>Comment</Form.Label>
+                                            <Form.Control as='textarea'
+                                                          row='3'
+                                                          disabled={isLoadingCreateReview}
+                                                          onChange={(e) => setComment(e.target.value)}
+                                                          value={comment}></Form.Control>
+                                        </Form.Group>
+                                        <Button type='submit'
+                                                disabled={isLoadingCreateReview}
+                                                variant='primary'>Add Review</Button>
+                                    </Form>
+                                ) : (
+                                    <Message>Please <Link to='/login'>Login</Link> to write a review.</Message>
+                                )}
+                            </ListGroup.Item>
+                        </ListGroup>
                     </Col>
                 </Row>
             </>)
