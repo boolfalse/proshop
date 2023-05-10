@@ -7,6 +7,7 @@ import Message from "../components/Message";
 import {Link, useParams} from "react-router-dom";
 import Paginate from "../components/Paginate";
 import {FaArrowLeft} from "react-icons/fa";
+import TopProducts from "../components/TopProducts";
 
 const HomeScreen = () => {
     const { pageNumber, keyword } = useParams();
@@ -34,7 +35,10 @@ const HomeScreen = () => {
                                     </Link>
                                 </>
                             ) : (
-                                <h2>Latest Products</h2>
+                                <>
+                                    <TopProducts />
+                                    <h2>Latest Products</h2>
+                                </>
                             )
                         }
                         <Row>

@@ -4,6 +4,7 @@ const router = express.Router();
 import productController from "../controllers/productController.js";
 import {isAdmin, isAuth} from "../middleware/authMiddleware.js";
 
+router.route('/top').get(productController.getTopProducts);
 router.route('/').get(productController.getProducts);
 router.route('/:id').get(productController.getProductById);
 router.route('/').post(isAuth, isAdmin, productController.createProduct);
