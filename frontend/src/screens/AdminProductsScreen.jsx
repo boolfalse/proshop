@@ -14,13 +14,13 @@ import {useParams} from "react-router-dom";
 import Paginate from "../components/Paginate";
 
 const AdminProductsScreen = () => {
-    const { pageNumber } = useParams();
+    const { pageNumber, keyword } = useParams();
     const {
         data: productsPagination,
         isLoading: isLoadingProducts,
         error: errorProducts,
         refetch: refetchProducts,
-    } = useFetchProductsQuery({ pageNumber });
+    } = useFetchProductsQuery({ pageNumber, keyword });
     const [createProduct, {
         isLoading: isLoadingCreateProduct,
         error: errorCreateProduct,
@@ -113,6 +113,7 @@ const AdminProductsScreen = () => {
                     </Table>
                     <Paginate pages={productsPagination.pagesCount}
                               page={productsPagination.page}
+                              keyword={keyword}
                               uriPrefix='/admin/products-list/page' />
                 </>
             )
