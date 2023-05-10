@@ -8,6 +8,7 @@ import {Link, useParams} from "react-router-dom";
 import Paginate from "../components/Paginate";
 import {FaArrowLeft} from "react-icons/fa";
 import TopProducts from "../components/TopProducts";
+import Meta from "../components/Meta";
 
 const HomeScreen = () => {
     const { pageNumber, keyword } = useParams();
@@ -29,6 +30,10 @@ const HomeScreen = () => {
                         {
                             keyword ? (
                                 <>
+                                    <Meta title={`Search Results for "${keyword}"`}
+                                          description={`Search Results for "${keyword}"`}
+                                          keywords={`Search Results for "${keyword}"`}
+                                    />
                                     <h2>Search Results for "{keyword}"</h2>
                                     <Link variant="light" className="btn btn-light" to="/">
                                         <FaArrowLeft /> Back to Home
@@ -36,6 +41,7 @@ const HomeScreen = () => {
                                 </>
                             ) : (
                                 <>
+                                    <Meta />
                                     <TopProducts />
                                     <h2>Latest Products</h2>
                                 </>
