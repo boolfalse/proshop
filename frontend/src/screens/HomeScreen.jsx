@@ -4,17 +4,20 @@ import Product from "../components/Product";
 import Loader from "../components/Loader";
 import { useFetchProductsQuery } from "../slices/productsApiSlice";
 import Message from "../components/Message";
+import {useParams} from "react-router-dom";
+import Paginate from "../components/Paginate";
 
 const HomeScreen = () => {
+    const { pageNumber } = useParams();
     const {
-        data: products,
-        isLoading,
+        data: productsPagination,
+        isLoading: isLoadingProducts,
         error,
-    } = useFetchProductsQuery();
+    } = useFetchProductsQuery({ pageNumber });
 
     return (
         <>
-            { isLoading ? (
+            { isLoadingProducts ? (
                 <Loader />
             ) : (
                 error ? (
@@ -23,12 +26,15 @@ const HomeScreen = () => {
                     <>
                         <h2>Latest Products</h2>
                         <Row>
-                            {products.map((product) => (
+                            {productsPagination.items.map((product) => (
                                 <Col key={product._id} sm="12" md="6" lg="4" xl="3">
                                     <Product product={product} />
                                 </Col>
                             ))}
                         </Row>
+                        <Paginate pages={productsPagination.pagesCount}
+                                  page={productsPagination.page}
+                                  uriPrefix='/page' />
                     </>
                 )
             ) }

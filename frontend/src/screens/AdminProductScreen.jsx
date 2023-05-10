@@ -71,7 +71,7 @@ const AdminProductScreen = () => {
             } else {
                 toast.success('Product updated.');
                 refetchProduct();
-                navigate('/admin/products');
+                navigate('/admin/products-list');
             }
         } catch (err) {
             console.error(err);
@@ -99,7 +99,7 @@ const AdminProductScreen = () => {
 
     return (
         <>
-            <Link to={'/admin/products'} className={'btn btn-light my-3'}>
+            <Link to={'/admin/products-list'} className={'btn btn-light my-3'}>
                 Products List
             </Link>
             <FormContainer>
