@@ -4,8 +4,9 @@ import Product from "../components/Product";
 import Loader from "../components/Loader";
 import { useFetchProductsQuery } from "../slices/productsApiSlice";
 import Message from "../components/Message";
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import Paginate from "../components/Paginate";
+import {FaArrowLeft} from "react-icons/fa";
 
 const HomeScreen = () => {
     const { pageNumber, keyword } = useParams();
@@ -24,7 +25,18 @@ const HomeScreen = () => {
                     <Message variant="danger">{error?.data?.message || error?.error}</Message>
                 ) : (
                     <>
-                        <h2>Latest Products</h2>
+                        {
+                            keyword ? (
+                                <>
+                                    <h2>Search Results for "{keyword}"</h2>
+                                    <Link variant="light" className="btn btn-light" to="/">
+                                        <FaArrowLeft /> Back to Home
+                                    </Link>
+                                </>
+                            ) : (
+                                <h2>Latest Products</h2>
+                            )
+                        }
                         <Row>
                             {productsPagination.items.map((product) => (
                                 <Col key={product._id} sm="12" md="6" lg="4" xl="3">
