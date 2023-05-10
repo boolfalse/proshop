@@ -132,6 +132,7 @@ const AdminProductScreen = () => {
                             <Form.Control type='file'
                                           placeholder='Choose image'
                                           onChange={uploadProductImageHandler} />
+                            {isLoadingUploadProductImage && <Loader />}
                         </Form.Group>
                         <Form.Group controlId='brand'>
                             <Form.Label>Brand</Form.Label>
